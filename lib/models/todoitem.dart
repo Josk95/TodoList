@@ -1,24 +1,20 @@
-class TodoItem {
-  final String id;
-  final String title;
-  bool done;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  TodoItem({this.id = "", required this.title, required this.done});
+class TodoItem {
+  final String title;
+  bool isDone;
+
+  TodoItem({required this.title, required this.isDone});
 
   factory TodoItem.fromJson(Map<dynamic, dynamic> json) => TodoItem(
-        id: json['id'],
+        // id: json['id'],
         title: json['title'],
-        done: json['done'],
+        isDone: json['done'],
       );
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "title": title,
-    "done": done
-  };
+  //Map<String, dynamic> toJson() => {"id": id, "title": title, "done": done};
 
-  @override
   String toString() {
-    return "{id: $id title: $title}";
+    return "{title: $title, isDone: $isDone}";
   }
 }

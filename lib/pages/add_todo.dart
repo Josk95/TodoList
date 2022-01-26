@@ -21,7 +21,7 @@ class _AddTodoState extends State<AddTodo> {
   }
 
   void submit() {
-    TodoItem item = TodoItem(title: _textController.text, done: false);
+    TodoItem item = TodoItem(title: _textController.text, isDone: false);
     Navigator.pop(context, item);
   }
 

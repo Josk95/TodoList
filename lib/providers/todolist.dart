@@ -1,29 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/models/category.dart';
 import 'package:todo_app/models/todoitem.dart';
 import 'package:todo_app/services/todo_service.dart';
 
-enum NotifierState { initial, loading, loaded }
-
 class TodoListProvider with ChangeNotifier {
-  TodoListProvider() {
-    fetchTodo();
-  }
-
   //Instance of TodoService class
   final _todoService = TodoService();
 
-  NotifierState _state = NotifierState.initial;
-  NotifierState get providerState => _state;
-  void _setState(NotifierState state) {
-    _state = state;
-    notifyListeners();
-  }
-
   //Setter for todoList. Takes an list an add to TodoList.
-  List<TodoItem> _todoList = [];
-  List<TodoItem> get list => _todoList;
+
+  List<TodoItem> todoList = [];
+  List<TodoItem> get list => todoList;
+
+  String pickedCategory = "";
+
   void _setList(List<TodoItem> list) {
-    _todoList = list;
+    todoList = list;
     notifyListeners();
   }
 
@@ -39,6 +32,23 @@ class TodoListProvider with ChangeNotifier {
   //Get filter Value
   int get filterBy => _filterBy;
 
+  void addTodo(String categoryId, TodoItem item) async {
+    await _todoService.addnewTodo(categoryId, item);
+    todoList.add(item);
+    print(todoList.toString());
+    notifyListeners();
+  }
+
+  Future getTodosFromCategory(String docId) async {
+    todoList = await _todoService.getTodosFromCategory(docId);
+    notifyListeners();
+    return todoList;
+  }
+
+/*
+
+  
+
   //Fetch todo List
   void fetchTodo() async {
     _setState(NotifierState.loading);
@@ -51,6 +61,25 @@ class TodoListProvider with ChangeNotifier {
     }
     _setState(NotifierState.loaded);
   }
+  */
+/*
+  Future<void> getTodosList() async {
+    try {
+      QuerySnapshot snapshot = await _todoService.readTodosCategory();
+
+      print(snapshot.docs[0].data());
+
+      for (var i = 0; i < snapshot.docs.length; i++) {
+        item = TodoItem(
+            title: snapshot.docs[i].get("title"),
+            isDone: snapshot.docs[i].get("isDone"));
+        resultList.add(item);
+      }
+      _setList(resultList);
+      print(resultList.toString());
+    } catch (e) {}
+  }
+  */
 
   //Set filterBy
   void setFilterby(int filterBy) {
@@ -59,13 +88,13 @@ class TodoListProvider with ChangeNotifier {
   }
 
   //Function to filter list
-  List<TodoItem> filterList(list, value) {
+  List<TodoItem>? filterList(list, value) {
     if (value == 2) {
-      return _todoList.where((item) => item.done == true).toList();
+      return todoList.where((item) => item.isDone == true).toList();
     } else if (value == 3) {
-      return _todoList.where((item) => item.done == false).toList();
+      return todoList.where((item) => item.isDone == false).toList();
     }
-    return _todoList;
+    return todoList;
   }
 
   //Add ItemObjekt to list
@@ -73,7 +102,7 @@ class TodoListProvider with ChangeNotifier {
     var result = await _todoService.postTodo(item);
     _setList(result);
   }
-
+/*
   //Delete ItemObjekt from list
   void deleteItem(TodoItem item) async {
     _setList(await _todoService.deleteTodoItem(item));
@@ -83,4 +112,6 @@ class TodoListProvider with ChangeNotifier {
   void isCompleted(TodoItem item) async {
     _setList(await _todoService.updateTodo(item));
   }
+  */
+
 }

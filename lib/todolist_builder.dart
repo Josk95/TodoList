@@ -10,26 +10,18 @@ class TodoListBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = Provider.of<TodoListProvider>(context, listen: false);
     return Container(
       margin: const EdgeInsets.only(bottom: 80),
-      child: RefreshIndicator(
-        onRefresh: () async {
-          state.fetchTodo();
-        },
-        child: ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              return _item(context, list[index]);
-            }),
-      ),
+      child: ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            return _item(context, list[index]);
+          }),
     );
   }
 }
 
 Widget _item(context, TodoItem item) {
-  //Get State from provider
-  var state = Provider.of<TodoListProvider>(context, listen: false);
   return Padding(
     padding: const EdgeInsets.only(top: 2, left: 5, right: 5),
     child: Card(
@@ -40,7 +32,7 @@ Widget _item(context, TodoItem item) {
             style: TextStyle(
                 fontSize: 23,
                 fontStyle: FontStyle.italic,
-                decoration: item.done ? TextDecoration.lineThrough : null,
+                decoration: item.isDone ? TextDecoration.lineThrough : null,
                 decorationThickness: 2.8,
                 decorationColor: Colors.orange[500]),
           ),
@@ -50,13 +42,14 @@ Widget _item(context, TodoItem item) {
                 color: Colors.grey[900],
               ),
               onPressed: () {
-                state.deleteItem(item);
+                //state.deleteItem(item);
               }),
           controlAffinity: ListTileControlAffinity.leading,
-          value: item.done,
+          value: item.isDone,
           onChanged: (value) {
-            item.done = !item.done; //Change value of checkbox to opposite value
-            state.isCompleted(item);
+            item.isDone =
+                !item.isDone; //Change value of checkbox to opposite value
+            // state.isCompleted(item);
           },
         )),
   );
